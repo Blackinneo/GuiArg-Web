@@ -1,0 +1,33 @@
+{
+    "marca": "GuiArg",
+    "estetica": "Minimalismo Phygital con Toque Humano (Wabi-Sabi)",
+    "paleta_argentina": {
+        "azul_horizonte": "#003870",
+        "celeste_identidad": "#75AADB",
+        "dorado_sol": "#D4AF37",
+        "blanco_maravilloso": "#FFFFFF",
+        "espiritu_naciente": "#F5F5F5",
+        "texto_antracita": "#333333"
+    },
+    "tipografia": {
+        "fuente_unica": "Poppins",
+        "jerarquia": {
+            "H1": "ExtraBold / 32px / Azul Horizonte",
+            "H2": "SemiBold / 24px / Azul Horizonte",
+            "H3": "Medium / 18px / Celeste Identidad",
+            "Body": "Regular / 16px / Texto Antracita",
+            "Caption": "Medium / 12px / Dorado Sol (Tags)"
+        }
+    },
+    "geometria": {
+        "radio_tarjeta": "16px",
+        "radio_boton": "12px",
+        "bordes_input": "1.5px",
+        "feedback_click": "scale(0.98)"
+    },
+    "atmosfera": {
+        "espacio_negativo": "70% de la UI debe ser blanca",
+        "sombras": "Sombra suave / difusa (Drop Shadow sutil)",
+        "decoracion": "Fileteado fino vectorizado solo en sellos y QRs"
+    }
+}
