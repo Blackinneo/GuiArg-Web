@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, type Variants } from 'framer-motion';
 import { useRef } from 'react';
 import { ArrowRight, Play, ShieldCheck, MapPin, DollarSign } from 'lucide-react';
 import Link from 'next/link';
@@ -120,11 +120,11 @@ function VerifiedBizBadge() {
     );
 }
 
-const stag = {
+const stag: Variants = {
     hidden: {},
     visible: { transition: { staggerChildren: 0.12, delayChildren: 0.08 } },
 };
-const fadeUp = {
+const fadeUp: Variants = {
     hidden: { opacity: 0, y: 28 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };

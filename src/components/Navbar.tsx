@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import {
     Menu, X, MapPin, ChevronRight, Compass, ChevronDown,
     Globe, Instagram, Youtube, Music2
@@ -34,6 +35,8 @@ export default function Navbar() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [selectedLang, setSelectedLang] = useState(languages[0]);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const pathname = usePathname();
+    const isAlwaysSolid = pathname === '/community';
 
     useEffect(() => {
         const handler = () => setScrolled(window.scrollY > 20);
@@ -61,23 +64,20 @@ export default function Navbar() {
                 className="fixed top-4 left-4 right-4 z-50 transition-all duration-300"
             >
                 <div
-                    className={`mx-auto max-w-6xl rounded-2xl px-4 py-3 flex items-center justify-between transition-all duration-300 ${scrolled
+                    className={`mx-auto max-w-6xl rounded-2xl px-4 py-3 flex items-center justify-between transition-all duration-300 ${scrolled || isAlwaysSolid
                         ? 'glass shadow-xl'
                         : 'bg-transparent'
                         }`}
                 >
                     {/* Logo */}
                     <Link href="/" aria-label="GuiArg - Inicio" className="flex items-center gap-2">
-                        <Image
-                            src="/logo.png"
-                            alt="GuiArg logo"
-                            width={32}
-                            height={32}
-                            priority
-                            fetchPriority="high"
-                            className="w-8 h-8 object-contain shadow-blue-500/20"
-                        />
-                        <span className="font-bold text-lg text-white tracking-tight">GuiArg</span>
+                        <div className="relative h-10 flex items-center">
+                            <img
+                                src="/4.png"
+                                alt="GuiArg logo"
+                                className="h-10 w-auto object-contain"
+                            />
+                        </div>
                     </Link>
 
                     {/* Desktop links */}
@@ -195,41 +195,88 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.25 }}
-                        className="fixed inset-x-4 top-24 z-40 rounded-2xl p-6 md:hidden border border-white/10 backdrop-blur-3xl"
-                        style={{ background: 'rgba(10, 22, 40, 0.3)' }}
+                        className="fixed inset-x-4 top-24 z-40 rounded-2xl p-6 md:hidden border border-white/10 backdrop-blur-3xl overflow-y-auto shadow-2xl max-h-[calc(100vh-8rem)]"
+                        style={{ background: 'rgba(10, 22, 40, 0.9)' }}
                     >
-                        <nav className="flex flex-col gap-2">
-                            {navLinks.map((link, i) => (
-                                <motion.div
-                                    key={link.href}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.07 }}
-                                >
-                                    <Link
-                                        href={link.href}
-                                        onClick={() => setMenuOpen(false)}
-                                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer"
+                        <nav className="flex flex-col">
+                            {/* Nav Links */}
+                            <div className="flex flex-col gap-1 mb-2">
+                                {navLinks.map((link, i) => (
+                                    <motion.div
+                                        key={link.href}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: i * 0.05 }}
                                     >
-                                        <MapPin size={14} className="text-blue-400 opacity-70" />
-                                        {link.label}
-                                    </Link>
-                                </motion.div>
-                            ))}
+                                        <Link
+                                            href={link.href}
+                                            onClick={() => setMenuOpen(false)}
+                                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer"
+                                        >
+                                            <MapPin size={16} className="text-blue-400 opacity-70" />
+                                            {link.label}
+                                        </Link>
+                                    </motion.div>
+                                ))}
+                            </div>
 
-                            <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-2">
+                            {/* Language Switcher */}
+                            <div className="mt-2 pt-4 border-t border-white/10">
+                                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                                    <Globe size={12} /> Idioma
+                                </p>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {languages.map((lang) => (
+                                        <button
+                                            key={lang.code}
+                                            onClick={() => setSelectedLang(lang)}
+                                            className={`p-2.5 rounded-lg text-xs font-bold transition-all border ${selectedLang.code === lang.code
+                                                ? 'bg-blue-500/20 border-blue-400/50 text-white'
+                                                : 'bg-white/5 border-transparent text-white/60 hover:bg-white/10'
+                                                }`}
+                                        >
+                                            <span className="text-base block mb-0.5">{lang.flag}</span>
+                                            {lang.code}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="mt-5 pt-5 border-t border-white/10 flex flex-col gap-3">
                                 <Link
                                     href="/explore"
-                                    className="flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 text-sm font-bold text-white/80"
+                                    onClick={() => setMenuOpen(false)}
+                                    className="flex items-center justify-between group w-full px-4 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all text-sm text-white/80"
                                 >
-                                    <Compass size={16} className="text-blue-400" /> Navegar
+                                    <div className="flex items-center gap-3">
+                                        <Compass size={18} className="text-blue-400 group-hover:rotate-45 transition-transform" />
+                                        <span className="font-bold">Navegar</span>
+                                    </div>
+                                    <ChevronRight size={16} className="opacity-50 group-hover:opacity-100 transition-opacity" />
                                 </Link>
+
                                 <Link
-                                    href="/register"
-                                    className="flex items-center justify-center py-3 rounded-xl bg-blue-600 font-black text-sm text-white"
+                                    href="/auth/register"
+                                    onClick={() => setMenuOpen(false)}
+                                    className="flex items-center justify-center w-full px-4 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-lg hover:shadow-blue-500/30 transition-all text-white text-base font-black"
                                 >
-                                    Registro
+                                    Registrarse
                                 </Link>
+                            </div>
+
+                            {/* Socials */}
+                            <div className="mt-5 pt-5 border-t border-white/10 flex items-center justify-center gap-6">
+                                {socials.map((social) => (
+                                    <Link
+                                        key={social.label}
+                                        href={social.href}
+                                        className="p-3 rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-all active:scale-90"
+                                        aria-label={social.label}
+                                    >
+                                        <social.icon size={22} />
+                                    </Link>
+                                ))}
                             </div>
                         </nav>
                     </motion.div>

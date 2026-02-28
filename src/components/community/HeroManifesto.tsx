@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, type Variants } from 'framer-motion';
 import { useRef } from 'react';
 import { ArrowRight, Users } from 'lucide-react';
 import Link from 'next/link';
@@ -100,11 +100,11 @@ function JerseyBg() {
     );
 }
 
-const stagger = {
+const stagger: Variants = {
     hidden: {},
     visible: { transition: { staggerChildren: 0.13, delayChildren: 0.1 } },
 };
-const fadeUp = {
+const fadeUp: Variants = {
     hidden: { opacity: 0, y: 28 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };

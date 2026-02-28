@@ -1,60 +1,14 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { MapPin, ChevronRight, Play, Users } from 'lucide-react';
+import { useRef } from 'react';
+import { motion, type Variants } from 'framer-motion';
+import { MapPin, Play, Users } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useArgentinaMap } from '@/hooks/useArgentinaMap';
 
-// QR SVG Illustration
-function QRIllustration() {
-    return (
-        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-            {/* Outer ring */}
-            <circle cx="100" cy="100" r="90" stroke="rgba(46,134,222,0.15)" strokeWidth="1" strokeDasharray="4 4" />
-            {/* Phone mockup */}
-            <rect x="70" y="55" width="60" height="95" rx="8" fill="rgba(22,27,34,0.9)" stroke="rgba(46,134,222,0.4)" strokeWidth="1.5" />
-            {/* Phone screen */}
-            <rect x="74" y="65" width="52" height="75" rx="4" fill="rgba(13,17,23,0.8)" />
-            {/* QR pattern simplified */}
-            <rect x="80" y="72" width="18" height="18" rx="2" fill="rgba(46,134,222,0.6)" />
-            <rect x="102" y="72" width="18" height="18" rx="2" fill="rgba(46,134,222,0.6)" />
-            <rect x="80" y="94" width="18" height="18" rx="2" fill="rgba(46,134,222,0.6)" />
-            <rect x="102" y="94" width="8" height="8" rx="1" fill="rgba(230,168,23,0.8)" />
-            <rect x="112" y="94" width="8" height="8" rx="1" fill="rgba(46,134,222,0.6)" />
-            <rect x="102" y="104" width="8" height="8" rx="1" fill="rgba(46,134,222,0.6)" />
-            <rect x="112" y="104" width="8" height="8" rx="1" fill="rgba(46,134,222,0.6)" />
-            {/* Inner squares */}
-            <rect x="83" y="75" width="12" height="12" rx="1" fill="rgba(13,17,23,1)" />
-            <rect x="85" y="77" width="8" height="8" rx="0.5" fill="rgba(46,134,222,0.9)" />
-            <rect x="105" y="75" width="12" height="12" rx="1" fill="rgba(13,17,23,1)" />
-            <rect x="107" y="77" width="8" height="8" rx="0.5" fill="rgba(46,134,222,0.9)" />
-            <rect x="83" y="97" width="12" height="12" rx="1" fill="rgba(13,17,23,1)" />
-            <rect x="85" y="99" width="8" height="8" rx="0.5" fill="rgba(46,134,222,0.9)" />
-            {/* Scan beam */}
-            <rect x="74" y="120" width="52" height="2" rx="1" fill="rgba(46,134,222,0.7)" />
-            <rect x="74" y="120" width="52" height="2" rx="1" fill="url(#scanGrad)" />
-            <defs>
-                <linearGradient id="scanGrad" x1="74" y1="121" x2="126" y2="121" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#2E86DE" stopOpacity="0" />
-                    <stop offset="0.5" stopColor="#54A0FF" />
-                    <stop offset="1" stopColor="#2E86DE" stopOpacity="0" />
-                </linearGradient>
-            </defs>
-            {/* Label */}
-            <rect x="76" y="132" width="48" height="6" rx="3" fill="rgba(46,134,222,0.2)" />
-            {/* Connection lines */}
-            <path d="M40 80 Q55 80 65 90" stroke="rgba(46,134,222,0.4)" strokeWidth="1.5" strokeDasharray="3 3" />
-            <path d="M160 80 Q145 80 135 90" stroke="rgba(230,168,23,0.4)" strokeWidth="1.5" strokeDasharray="3 3" />
-            {/* Store icons */}
-            <circle cx="35" cy="75" r="14" fill="rgba(46,134,222,0.15)" stroke="rgba(46,134,222,0.3)" strokeWidth="1" />
-            <text x="35" y="80" textAnchor="middle" fontSize="12" fill="rgba(46,134,222,0.8)">🏪</text>
-            <circle cx="165" cy="75" r="14" fill="rgba(230,168,23,0.1)" stroke="rgba(230,168,23,0.3)" strokeWidth="1" />
-            <text x="165" y="80" textAnchor="middle" fontSize="12" fill="rgba(230,168,23,0.8)">⭐</text>
-        </svg>
-    );
-}
 
-const heroVariants = {
+const heroVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
@@ -62,27 +16,55 @@ const heroVariants = {
     },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };
 
 export default function Hero() {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    useArgentinaMap(canvasRef);
+
     return (
         <section
-            className="relative min-h-screen flex items-center justify-center overflow-hidden mesh-bg"
+            className="relative min-h-screen flex items-center justify-center overflow-hidden"
             aria-label="Sección principal de GuiArg"
+            style={{
+                background: 'linear-gradient(160deg, #080E1A 0%, #0C1220 40%, #0D1117 100%)',
+            }}
         >
-            {/* Grid overlay */}
-            <div className="absolute inset-0 grid-pattern opacity-40 pointer-events-none" aria-hidden="true" />
-
-            {/* Blue glow orb */}
-            <div
-                className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none"
-                style={{ background: 'radial-gradient(ellipse, rgba(46,134,222,0.12) 0%, transparent 70%)' }}
+            {/* ── Argentina Map Canvas (full-bleed background) ── */}
+            <canvas
+                ref={canvasRef}
+                className="absolute inset-0 w-full h-full"
+                style={{ opacity: 0.92 }}
                 aria-hidden="true"
             />
 
+            {/* ── Subtle vignette edges ── */}
+            <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                    background:
+                        'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(8,14,26,0.65) 100%)',
+                }}
+                aria-hidden="true"
+            />
+
+            {/* ── Left content fade (make text readable) ── */}
+            <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                    background:
+                        'linear-gradient(90deg, rgba(8,14,26,0.82) 0%, rgba(8,14,26,0.5) 45%, transparent 70%)',
+                }}
+                aria-hidden="true"
+            />
+
+            {/* ── Grid overlay ── */}
+            <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" aria-hidden="true" />
+
+            {/* ── Content ── */}
             <div className="relative z-10 max-w-6xl mx-auto px-4 pt-28 pb-16">
                 <motion.div
                     variants={heroVariants}
@@ -166,43 +148,51 @@ export default function Hero() {
                         aria-hidden="true"
                     >
                         {/* Main QR card */}
-                        <div className="float-slow relative z-20 glass rounded-3xl p-6 w-52 h-52 flex flex-col items-center justify-center pulse-blue">
-                            <div className="w-full h-full">
-                                <QRIllustration />
-                            </div>
+                        <div className="float-slow relative z-20 glass rounded-3xl p-2 w-56 h-56 flex flex-col items-center justify-center pulse-blue overflow-hidden">
+                            <Image
+                                src="/QRHeroSection.avif"
+                                alt="QR GuiArg"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 224px"
+                                priority
+                                className="object-cover rounded-2xl"
+                                style={{ opacity: 0.70 }}
+                            />
                         </div>
 
-                        {/* Floating card: Business */}
+                        {/* Floating card: Todo en un Solo QR */}
                         <motion.div
                             className="float-medium absolute top-8 right-4 glass rounded-2xl px-4 py-3 z-30"
                             style={{ transformOrigin: 'center' }}
                         >
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(46,134,222,0.2)' }}>
-                                    <MapPin size={16} className="text-blue-400" />
+                                    <span className="text-lg">🔲</span>
                                 </div>
                                 <div>
-                                    <p className="text-xs text-gray-400">Escaneado ahora</p>
-                                    <p className="text-sm font-semibold text-white">Café del Sol</p>
+                                    <p className="text-xs text-gray-400">Acceso simple</p>
+                                    <p className="text-sm font-semibold text-white">Todo en un Solo QR</p>
                                 </div>
                             </div>
                         </motion.div>
 
-                        {/* Floating card: Stats */}
+                        {/* Floating card: Para toda la Argentina */}
                         <motion.div
                             className="float-slow absolute bottom-16 left-0 glass rounded-2xl px-4 py-3 z-30"
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: 1, duration: 0.5 }}
                         >
-                            <p className="text-xs text-gray-400 mb-1">Impacto hoy</p>
-                            <div className="flex items-end gap-1">
-                                <span className="text-2xl font-black gradient-text-gold">+1.2k</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xl">🇦🇷</span>
+                                <div>
+                                    <p className="text-sm font-bold text-white">Para toda la Argentina.</p>
+                                    <p className="text-xs text-gray-400">Cobertura nacional</p>
+                                </div>
                             </div>
-                            <p className="text-xs text-gray-500">conexiones locales</p>
                         </motion.div>
 
-                        {/* Floating card: Rating */}
+                        {/* Floating card: Beneficios */}
                         <motion.div
                             className="float-medium absolute bottom-10 right-2 glass-amber rounded-2xl px-4 py-3 z-30"
                             initial={{ opacity: 0, scale: 0.8 }}
@@ -212,17 +202,11 @@ export default function Hero() {
                             <div className="flex items-center gap-2">
                                 <span className="text-yellow-400 text-lg">★</span>
                                 <div>
-                                    <p className="text-sm font-bold text-white">4.9</p>
-                                    <p className="text-xs text-gray-400">Valoración promedio</p>
+                                    <p className="text-sm font-bold text-white">Obtené Beneficios</p>
+                                    <p className="text-xs text-gray-400">por cada compra</p>
                                 </div>
                             </div>
                         </motion.div>
-
-                        {/* Background glow */}
-                        <div
-                            className="absolute inset-0 rounded-full"
-                            style={{ background: 'radial-gradient(ellipse at center, rgba(46,134,222,0.08) 0%, transparent 70%)' }}
-                        />
                     </motion.div>
                 </motion.div>
 

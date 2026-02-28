@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, Variants } from 'framer-motion';
 import { useRef } from 'react';
 import { Heart, ArrowRight, Shield } from 'lucide-react';
 
@@ -39,7 +39,7 @@ const beneficiaries = [
 ];
 
 /* ── Heartbeat pulse keyframe via Framer Motion ────────────── */
-const heartbeatVariants = {
+const heartbeatVariants: Variants = {
     animate: {
         scale: [1, 1.06, 1, 1.04, 1],
         boxShadow: [
