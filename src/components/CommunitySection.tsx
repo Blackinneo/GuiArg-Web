@@ -3,8 +3,9 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
-import { Users, MessageCircle, Globe2, TrendingUp, ChevronRight } from 'lucide-react';
+import { Users, Globe2, TrendingUp, MessageCircle, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import TribeAnimation from './TribeAnimation';
 
 // Animated counter hook
 function useCounter(target: number, duration: number, active: boolean) {
@@ -21,60 +22,6 @@ function useCounter(target: number, duration: number, active: boolean) {
         return () => clearInterval(timer);
     }, [target, duration, active]);
     return count;
-}
-
-// Avatar cluster
-const avatarColors = [
-    '#1A5FAD', '#2E86DE', '#54A0FF', '#74B9FF',
-    '#E6A817', '#F9CA24', '#1A5FAD', '#2E86DE',
-];
-const avatarLetters = ['M', 'J', 'A', 'R', 'L', 'F', 'V', 'G'];
-
-function AvatarCluster() {
-    const positions = [
-        { x: 50, y: 50, size: 52, delay: 0 },
-        { x: 120, y: 20, size: 40, delay: 0.1 },
-        { x: -10, y: 20, size: 36, delay: 0.15 },
-        { x: 160, y: 70, size: 44, delay: 0.2 },
-        { x: -40, y: 80, size: 38, delay: 0.25 },
-        { x: 80, y: 110, size: 34, delay: 0.3 },
-        { x: 130, y: 110, size: 30, delay: 0.35 },
-        { x: 20, y: 115, size: 30, delay: 0.4 },
-    ];
-
-    return (
-        <div className="relative w-64 h-52 mx-auto" aria-hidden="true">
-            {positions.map((pos, i) => (
-                <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 + pos.delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute flex items-center justify-center rounded-full border-2 border-[#0D1117] font-bold text-white shadow-lg"
-                    style={{
-                        left: `${pos.x}px`,
-                        top: `${pos.y}px`,
-                        width: `${pos.size}px`,
-                        height: `${pos.size}px`,
-                        background: avatarColors[i],
-                        fontSize: `${Math.max(10, pos.size * 0.32)}px`,
-                    }}
-                >
-                    {avatarLetters[i]}
-                </motion.div>
-            ))}
-            {/* Live badge */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8 }}
-                className="absolute top-0 right-0 glass-light rounded-full px-3 py-1.5 flex items-center gap-1.5"
-            >
-                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-xs text-green-400 font-semibold">En vivo</span>
-            </motion.div>
-        </div>
-    );
 }
 
 const stats = [
@@ -130,7 +77,6 @@ export default function CommunitySection() {
                         <div className="grid grid-cols-2 gap-3 mb-8">
                             {stats.map((stat, i) => {
                                 const Icon = stat.icon;
-                                // For stat index 3 (PBI 5.5%), display divided by 10 with decimal
                                 const displayValue = i === 3
                                     ? (counters[i] / 10).toFixed(1)
                                     : counters[i].toLocaleString('es-AR');
@@ -167,29 +113,29 @@ export default function CommunitySection() {
                         </Link>
                     </motion.div>
 
-                    {/* Right: Avatar cluster */}
+                    {/* Right: Tribe Animation */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.92 }}
                         animate={isInView ? { opacity: 1, scale: 1 } : {}}
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="relative"
-                        aria-hidden="true"
                     >
-                        <div className="glass rounded-3xl p-10 relative overflow-hidden">
-                            <p className="text-center text-sm text-gray-400 mb-6 tracking-wide">
-                                Se unieron recientemente
-                            </p>
-                            <AvatarCluster />
-                            <p className="text-center text-gray-300 text-sm mt-6 font-medium">
-                                +500 emprendedores conectados
-                            </p>
+                        <div className="glass rounded-3xl p-6 relative overflow-hidden" style={{ minHeight: '360px' }}>
                             {/* Decorative rings */}
-                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <div className="w-[320px] h-[320px] rounded-full border border-blue-500/10" />
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+                                <div className="w-[320px] h-[220px] rounded-full border border-blue-500/10" />
                             </div>
-                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <div className="w-[420px] h-[420px] rounded-full border border-blue-500/5" />
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+                                <div className="w-[420px] h-[300px] rounded-full border border-blue-500/5" />
                             </div>
+
+                            {/* Animation */}
+                            <TribeAnimation />
+
+                            {/* Footer text */}
+                            <p className="absolute bottom-5 left-0 right-0 text-center text-gray-300 text-sm font-semibold px-4">
+                                Nuevos Negocios y Emprendimientos cada Segundo
+                            </p>
                         </div>
                     </motion.div>
                 </div>
