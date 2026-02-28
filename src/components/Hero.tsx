@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, type Variants } from 'framer-motion';
-import { MapPin, Play, Users } from 'lucide-react';
+import { MapPin, Users } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useArgentinaMap } from '@/hooks/useArgentinaMap';
@@ -111,8 +111,7 @@ export default function Hero() {
                                 className="btn-secondary"
                                 aria-label="Ver cómo funciona GuiArg"
                             >
-                                <Play size={14} className="text-blue-400" />
-                                Ver Manifiesto
+                                + GuiArg
                             </Link>
                         </motion.div>
 
@@ -122,16 +121,30 @@ export default function Hero() {
                             className="mt-10 flex items-center gap-4"
                         >
                             <div className="flex -space-x-2">
-                                {[...Array(5)].map((_, i) => (
+                                {[
+                                    { bg: 'hsl(210, 70%, 45%)', skin: '#F5CBA7' },
+                                    { bg: 'hsl(230, 70%, 50%)', skin: '#D4A574' },
+                                    { bg: 'hsl(250, 70%, 55%)', skin: '#C68642' },
+                                    { bg: 'hsl(270, 70%, 50%)', skin: '#8D5524' },
+                                    { bg: 'hsl(200, 70%, 48%)', skin: '#FDEBD0' },
+                                ].map((avatar, i) => (
                                     <div
                                         key={i}
-                                        className="w-8 h-8 rounded-full border-2 border-[#0D1117] flex items-center justify-center text-xs font-bold"
-                                        style={{
-                                            background: `hsl(${210 + i * 20}, 70%, ${45 + i * 5}%)`,
-                                        }}
+                                        className="w-8 h-8 rounded-full border-2 border-[#0D1117] flex items-center justify-center overflow-hidden"
+                                        style={{ background: avatar.bg }}
                                         aria-hidden="true"
                                     >
-                                        {['M', 'J', 'L', 'F', 'A'][i]}
+                                        <svg viewBox="0 0 32 32" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+                                            {/* Body */}
+                                            <ellipse cx="16" cy="26" rx="9" ry="6" fill={avatar.bg} opacity="0.9" />
+                                            {/* Head */}
+                                            <circle cx="16" cy="13" r="6.5" fill={avatar.skin} />
+                                            {/* Eyes */}
+                                            <circle cx="13.5" cy="12.5" r="1" fill="#333" />
+                                            <circle cx="18.5" cy="12.5" r="1" fill="#333" />
+                                            {/* Smile */}
+                                            <path d="M13.5 15.5 Q16 17.5 18.5 15.5" stroke="#555" strokeWidth="0.8" fill="none" strokeLinecap="round" />
+                                        </svg>
                                     </div>
                                 ))}
                             </div>

@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
-import { Users, MessageCircle, Globe2, ChevronRight } from 'lucide-react';
+import { Users, MessageCircle, Globe2, TrendingUp, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 // Animated counter hook
@@ -78,10 +78,10 @@ function AvatarCluster() {
 }
 
 const stats = [
-    { value: 500, suffix: '+', label: 'Negocios activos', icon: Globe2, color: '#2E86DE' },
-    { value: 12, suffix: 'k+', label: 'Miembros activos', icon: Users, color: '#E6A817' },
-    { value: 24, suffix: '', label: 'Provincias', icon: MessageCircle, color: '#54A0FF' },
-    { value: 15, suffix: '%', label: 'Crecimiento mensual', icon: ChevronRight, color: '#74B9FF' },
+    { value: 650, suffix: 'k', label: 'PyMEs en Argentina', icon: Globe2, color: '#2E86DE', source: 'INDEC' },
+    { value: 46, suffix: 'M', label: 'Habitantes', icon: Users, color: '#E6A817', source: 'INDEC 2025' },
+    { value: 25, suffix: '%', label: 'Inflación 2026 (proyectada)', icon: TrendingUp, color: '#54A0FF', source: 'Ministerio de Economía' },
+    { value: 5.5, suffix: '%', label: 'Crecimiento del PBI 2026', icon: MessageCircle, color: '#74B9FF', source: 'FMI / CEPAL' },
 ];
 
 export default function CommunitySection() {
@@ -91,7 +91,7 @@ export default function CommunitySection() {
     const s0 = useCounter(stats[0].value, 1800, isInView);
     const s1 = useCounter(stats[1].value, 1800, isInView);
     const s2 = useCounter(stats[2].value, 1400, isInView);
-    const s3 = useCounter(stats[3].value, 1500, isInView);
+    const s3 = useCounter(Math.round(stats[3].value * 10), 1500, isInView);
     const counters = [s0, s1, s2, s3];
 
     return (
@@ -130,6 +130,10 @@ export default function CommunitySection() {
                         <div className="grid grid-cols-2 gap-3 mb-8">
                             {stats.map((stat, i) => {
                                 const Icon = stat.icon;
+                                // For stat index 3 (PBI 5.5%), display divided by 10 with decimal
+                                const displayValue = i === 3
+                                    ? (counters[i] / 10).toFixed(1)
+                                    : counters[i].toLocaleString('es-AR');
                                 return (
                                     <motion.div
                                         key={stat.label}
@@ -143,9 +147,10 @@ export default function CommunitySection() {
                                             <span className="text-xs text-gray-400">{stat.label}</span>
                                         </div>
                                         <p className="text-2xl font-black text-white">
-                                            {counters[i].toLocaleString('es-AR')}
+                                            {displayValue}
                                             <span style={{ color: stat.color }}>{stat.suffix}</span>
                                         </p>
+                                        <p className="text-[10px] text-gray-600 mt-1">{stat.source}</p>
                                     </motion.div>
                                 );
                             })}
